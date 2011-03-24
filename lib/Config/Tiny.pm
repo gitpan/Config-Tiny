@@ -5,7 +5,7 @@ package Config::Tiny;
 use strict;
 BEGIN {
 	require 5.004;
-	$Config::Tiny::VERSION = '2.13';
+	$Config::Tiny::VERSION = '2.14';
 	$Config::Tiny::errstr  = '';
 }
 
@@ -97,15 +97,16 @@ sub write_string {
 		# 1. Leading whitespace
 		# 2. Trailing whitespace
 		# 3. Newlines in section name
-		if ( $section =~ /(?:^\s|\n|\s$)/s ) {
-			return $self->_error(
-				"Illegal whitespace in section name '$section'"
-			);
-		}
+		return $self->_error(
+			"Illegal whitespace in section name '$section'"
+		) if $section =~ /(?:^\s|\n|\s$)/s;
 		my $block = $self->{$section};
 		$contents .= "\n" if length $contents;
 		$contents .= "[$section]\n" unless $section eq '_';
 		foreach my $property ( sort keys %$block ) {
+			return $self->_error(
+				"Illegal newlines in property '$section.$property'"
+			) if $block->{$property} =~ /(?:\012|\015)/s;
 			$contents .= "$property=$block->{$property}\n";
 		}
 	}
@@ -268,7 +269,7 @@ L<Config::Simple>, L<Config::General>, L<ali.as>
 
 =head1 COPYRIGHT
 
-Copyright 2002 - 2010 Adam Kennedy.
+Copyright 2002 - 2011 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
