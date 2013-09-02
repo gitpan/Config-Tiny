@@ -1,13 +1,12 @@
 use strict;
-use vars qw{$VERSION};
+our $VERSION = '2.15';
 BEGIN {
-	require 5.003_96;
-	$VERSION = '2.14';
+	require 5.008001;
 }
 use ExtUtils::MakeMaker;
 
 WriteMakefile1(
-	MIN_PERL_VERSION => '5.004', #from Tiny.pm
+	MIN_PERL_VERSION => '5.008001', #from Tiny.pm
 	META_MERGE => {
 		resources => {
 			repository => 'http://svn.ali.as/cpan/trunk/Config-Tiny',
@@ -21,7 +20,16 @@ WriteMakefile1(
 	NAME      => 'Config::Tiny',
 	ABSTRACT  => 'Read/Write .ini style files with as little code as possible',
 	VERSION   => $VERSION,
-	PREREQ_PM => { },
+	PREREQ_PM =>
+	{
+		'File::Temp' => 0.2301,
+		'Path::Tiny' => 0.025,
+		'perl'       => '5.8.1', # For the utf stuff.
+		'strict'     => 0,
+		'UNIVERSAL'  => 0,
+		'utf8'       => 0,
+		'vars'       => 0,
+	},
 	AUTHOR    => 'Adam Kennedy <adamk@cpan.org>',
 	LICENSE   => 'perl',
 );
